@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human Emotion Detection using Facial Expression</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f7f2ea;
+            --ink: #1f1d1a;
+            --muted: #6a635c;
+            --accent: #d8674b;
+            --accent-2: #2e6f6b;
+            --card: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.10);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Space Grotesk", system-ui, sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 12% 10%, #f4c3b5 0%, transparent 40%),
+                radial-gradient(circle at 88% 5%, #d8e1d4 0%, transparent 45%),
+                radial-gradient(circle at 20% 80%, #f0dfc0 0%, transparent 45%),
+                var(--bg);
+        }
+        .page {
+            max-width: 1050px;
+            margin: 0 auto;
+            padding: 40px 20px 70px;
+        }
+        header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        .title-block h1 {
+            margin: 0 0 8px;
+            font-size: 34px;
+            letter-spacing: 0.2px;
+        }
+        .title-block p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 16px;
+            max-width: 580px;
+            line-height: 1.5;
+        }
+        .user-chip {
+            background: var(--card);
+            padding: 10px 16px;
+            border-radius: 999px;
+            box-shadow: 0 8px 20px var(--shadow);
+            font-size: 14px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 24px;
+        }
+        .card {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 12px 30px var(--shadow);
+        }
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: linear-gradient(120deg, #fff3ee, #eef6f3);
+            border: 1px solid #efe3d3;
+        }
+        .hero h2 {
+            margin: 0 0 6px;
+            font-size: 20px;
+        }
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid #ece4da;
+            font-size: 13px;
+        }
+        .camera-box {
+            background: #111;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid #1f1f1f;
+        }
+        #video {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+        }
+        .actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        #capture-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(216, 103, 75, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #capture-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(216, 103, 75, 0.3);
+        }
+        #capture-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+        .status {
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .result {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #f6f4ef;
+            border: 1px solid #e9e4d9;
+        }
+        .prob-list {
+            margin: 12px 0 0;
+            display: grid;
+            gap: 10px;
+        }
+        .prob-item {
+            display: grid;
+            grid-template-columns: 90px 1fr 60px;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .prob-bar {
+            height: 10px;
+            background: #eadfd1;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .prob-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-2), var(--accent));
+            border-radius: 999px;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+        .sidebar h3 {
+            margin: 0 0 10px;
+        }
+        .steps {
+            margin: 0;
+            padding-left: 18px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+        .meta {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .meta-card {
+            border: 1px solid #efe3d3;
+            border-radius: 12px;
+            padding: 10px 12px;
+            background: #fffaf3;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .meta-card strong {
+            display: block;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+        .logout {
+            display: inline-block;
+            margin-top: 12px;
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        @media (max-width: 900px) {
+            header { flex-direction: column; }
+            .grid { grid-template-columns: 1fr; }
+            #video { height: 260px; }
+            .meta { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+    <header>
+        <div class="title-block">
+            <h1>Human Emotion Detection using Facial Expression</h1>
+            <p>Capture a facial image and let the system classify the emotion.</p>
+        </div>
+        {% if username %}
+        <div class="user-chip">Signed in as <b>{{ username }}</b></div>
+        {% endif %}
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <div class="hero">
+                <div>
+                    <h2>Live Capture</h2>
+                    <p>Use good lighting and keep your face centered for best results.</p>
+                </div>
+                <div class="pill">FYP Demo • Real-Time</div>
+            </div>
+            <div class="camera-box">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" width="300" height="220" style="display:none;"></canvas>
+            </div>
+
+            <form id="capture-form" method="POST" action="/capture/save">
+                <input type="hidden" name="image_data" id="image-data">
+                <div class="actions">
+                    <button type="button" id="capture-btn">Capture Image</button>
+                    <span class="status">Camera must be enabled to capture.</span>
+                </div>
+            </form>
+
+            {% if emotion %}
+            <div class="result">
+                Detected emotion: <b>{{ emotion }}</b> ({{ score }})
+                {% if emotion_probs %}
+                <div class="prob-list" aria-label="Emotion probabilities">
+                    {% for row in emotion_probs %}
+                    <div class="prob-item">
+                        <span>{{ row.label }}</span>
+                        <div class="prob-bar">
+                            <div class="prob-fill" data-width="{{ (row.prob * 100) | round(1) }}%"></div>
+                        </div>
+                        <span>{{ (row.prob * 100) | round(1) }}%</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% elif emotion_msg %}
+            <div class="result">
+                {{ emotion_msg }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="card sidebar">
+            <h3>How it works</h3>
+            <ol class="steps">
+                <li>Allow camera access in your browser.</li>
+                <li>Capture a clear image of your face.</li>
+                <li>The model analyzes the image and predicts an emotion.</li>
+            </ol>
+            <div class="meta">
+                <div class="meta-card">
+                    <strong>Model</strong>
+                    Custom PyTorch classifier
+                </div>
+                <div class="meta-card">
+                    <strong>Dataset</strong>
+                    Training folders in `training_data`
+                </div>
+                <div class="meta-card">
+                    <strong>Output</strong>
+                    Emotion label + confidence
+                </div>
+                <div class="meta-card">
+                    <strong>Tip</strong>
+                    Neutral face improves accuracy
+                </div>
+            </div>
+            <a class="logout" href="/logout">Logout</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const captureBtn = document.getElementById("capture-btn");
+    const imageData = document.getElementById("image-data");
+    const form = document.getElementById("capture-form");
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(() => {
+            captureBtn.disabled = true;
+            captureBtn.textContent = "Camera blocked";
+        });
+
+    captureBtn.addEventListener("click", () => {
+        const context = canvas.getContext("2d");
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        imageData.value = canvas.toDataURL("image/jpeg");
+        form.submit();
+    });
+
+    const bars = document.querySelectorAll(".prob-fill");
+    if (bars.length) {
+        requestAnimationFrame(() => {
+            bars.forEach(bar => {
+                bar.style.width = bar.dataset.width || "0%";
+            });
+        });
+    }
+</script>
+
+</body>
+</html>

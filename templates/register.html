@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+
+<div class="container auth-card">
+    <h2>Create Account</h2>
+
+    <form method="POST">
+        <div class="field-row">
+            <div class="field">
+                <label>First Name</label>
+                <input type="text" name="first_name" required>
+            </div>
+            <div class="field">
+                <label>Last Name</label>
+                <input type="text" name="last_name" required>
+            </div>
+        </div>
+
+        <label>Email</label>
+        <input type="email" name="email" placeholder="johndoe@example.com" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="••••••••" required>
+
+        <label>Confirm Password</label>
+        <input type="password" name="confirm_password" placeholder="••••••••" required>
+
+        {% if error %}
+        <div class="info">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+
+        <button type="submit" class="auth-btn">Register</button>
+    </form>
+
+    <a href="/login">Already have an account? Sign in</a>
+</div>
+
+</body>
+</html>
