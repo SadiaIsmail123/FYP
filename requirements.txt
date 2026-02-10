@@ -2,6 +2,7 @@ Flask==3.0.3
 fer==22.5.0
 moviepy==1.0.3
 opencv-python==4.10.0.84
+numpy==1.26.4
 mysql-connector-python==9.0.0
 torch==2.2.2
 torchvision==0.17.2

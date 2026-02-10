@@ -8,59 +8,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f7f2ea;
+            --bg: #f2f2f2;
             --ink: #1f1d1a;
-            --muted: #6a635c;
-            --accent: #d8674b;
-            --accent-2: #2e6f6b;
+            --muted: #7a7a7a;
+            --accent: #6c4bff;
+            --accent-2: #2fb7ff;
             --card: #ffffff;
             --shadow: rgba(0, 0, 0, 0.10);
+            --stroke: rgba(26, 36, 43, 0.12);
+            --glow: rgba(97, 115, 255, 0.25);
         }
         * { box-sizing: border-box; }
         body {
             margin: 0;
             font-family: "Space Grotesk", system-ui, sans-serif;
             color: var(--ink);
-            background:
-                radial-gradient(circle at 12% 10%, #f4c3b5 0%, transparent 40%),
-                radial-gradient(circle at 88% 5%, #d8e1d4 0%, transparent 45%),
-                radial-gradient(circle at 20% 80%, #f0dfc0 0%, transparent 45%),
-                var(--bg);
+            background: var(--bg);
         }
         .page {
-            max-width: 1050px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 40px 20px 70px;
+            padding: 32px 16px 60px;
         }
-        header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 28px;
-        }
-        .title-block h1 {
-            margin: 0 0 8px;
-            font-size: 34px;
-            letter-spacing: 0.2px;
-        }
-        .title-block p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 16px;
-            max-width: 580px;
-            line-height: 1.5;
-        }
-        .user-chip {
-            background: var(--card);
-            padding: 10px 16px;
+        .status-chip {
+            margin-top: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
             border-radius: 999px;
-            box-shadow: 0 8px 20px var(--shadow);
-            font-size: 14px;
+            background: #ffffff;
+            border: 1px solid #e5e5f2;
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.3px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+        }
+        .status-chip strong {
+            color: var(--ink);
+            font-weight: 700;
         }
         .grid {
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
+            grid-template-columns: 1.2fr 0.8fr;
             gap: 24px;
         }
         .card {
@@ -68,21 +58,23 @@
             border-radius: 18px;
             padding: 18px;
             box-shadow: 0 12px 30px var(--shadow);
+            border: 1px solid var(--stroke);
         }
         .hero {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            flex-wrap: wrap;
             margin-bottom: 16px;
             padding: 14px 16px;
             border-radius: 14px;
-            background: linear-gradient(120deg, #fff3ee, #eef6f3);
-            border: 1px solid #efe3d3;
+            background: linear-gradient(120deg, #f5f7ff, #eef6ff);
+            border: 1px solid #e5e7f5;
         }
         .hero h2 {
             margin: 0 0 6px;
-            font-size: 20px;
+            font-size: 19px;
         }
         .hero p {
             margin: 0;
@@ -95,21 +87,36 @@
             gap: 8px;
             padding: 8px 12px;
             border-radius: 999px;
-            background: #fff;
-            border: 1px solid #ece4da;
+            background: #ffffff;
+            border: 1px solid #e5e5f2;
             font-size: 13px;
+            color: #5b5b6a;
+            letter-spacing: 0.4px;
         }
         .camera-box {
             background: #111;
             border-radius: 14px;
             overflow: hidden;
             border: 2px solid #1f1f1f;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+        .camera-wrap {
+            position: relative;
+            width: 100%;
         }
         #video {
             width: 100%;
-            height: 320px;
+            height: 360px;
             object-fit: cover;
             display: block;
+        }
+        #overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
         .actions {
             display: flex;
@@ -119,20 +126,55 @@
             gap: 12px;
             flex-wrap: wrap;
         }
+        #toggle-detect {
+            background: #ffffff;
+            color: var(--ink);
+            border: 1px solid #e5e5f2;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #toggle-detect:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 22px rgba(0, 0, 0, 0.12);
+        }
+        #toggle-detect.paused {
+            background: linear-gradient(90deg, var(--accent-2), var(--accent));
+            color: #fff;
+            border-color: transparent;
+        }
+        #toggle-camera {
+            background: #ffffff;
+            color: var(--ink);
+            border: 1px solid #e5e5f2;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #toggle-camera:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 22px rgba(0, 0, 0, 0.12);
+        }
         #capture-btn {
-            background: var(--accent);
+            background: linear-gradient(90deg, var(--accent-2), var(--accent));
             color: #fff;
             border: none;
             padding: 12px 18px;
             border-radius: 12px;
             font-size: 15px;
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(216, 103, 75, 0.25);
+            box-shadow: 0 10px 24px var(--glow);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         #capture-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 12px 24px rgba(216, 103, 75, 0.3);
+            box-shadow: 0 16px 30px rgba(97, 115, 255, 0.35);
         }
         #capture-btn:disabled {
             background: #999;
@@ -175,14 +217,16 @@
             width: 0%;
             transition: width 0.6s ease;
         }
-        .sidebar h3 {
+        .help-panel h3 {
             margin: 0 0 10px;
+            font-size: 16px;
         }
         .steps {
             margin: 0;
             padding-left: 18px;
             color: var(--muted);
             line-height: 1.7;
+            font-size: 13px;
         }
         .meta {
             margin-top: 16px;
@@ -191,17 +235,18 @@
             gap: 10px;
         }
         .meta-card {
-            border: 1px solid #efe3d3;
+            border: 1px solid #e5e5f2;
             border-radius: 12px;
             padding: 10px 12px;
-            background: #fffaf3;
-            font-size: 13px;
+            background: #f7f7ff;
+            font-size: 12px;
             color: var(--muted);
         }
         .meta-card strong {
             display: block;
             color: var(--ink);
             margin-bottom: 4px;
+            font-size: 12px;
         }
         .logout {
             display: inline-block;
@@ -211,25 +256,19 @@
             font-weight: 600;
         }
         @media (max-width: 900px) {
-            header { flex-direction: column; }
             .grid { grid-template-columns: 1fr; }
             #video { height: 260px; }
             .meta { grid-template-columns: 1fr; }
         }
     </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
 </head>
 <body>
 
-<div class="page">
-    <header>
-        <div class="title-block">
-            <h1>Human Emotion Detection using Facial Expression</h1>
-            <p>Capture a facial image and let the system classify the emotion.</p>
-        </div>
-        {% if username %}
-        <div class="user-chip">Signed in as <b>{{ username }}</b></div>
-        {% endif %}
-    </header>
+<div class="page with-sidebar">
+    <div class="shell">
+        {% include "_sidebar.html" %}
+        <main>
 
     <div class="grid">
         <div class="card">
@@ -238,46 +277,33 @@
                     <h2>Live Capture</h2>
                     <p>Use good lighting and keep your face centered for best results.</p>
                 </div>
-                <div class="pill">FYP Demo • Real-Time</div>
+                <div class="pill">Emotion Detection System</div>
+                <div class="status-chip">
+                    <span>Frames <strong id="frame-count">0</strong></span>
+                    <span>Faces <strong id="face-count">0</strong></span>
+                </div>
             </div>
             <div class="camera-box">
-                <video id="video" autoplay playsinline></video>
-                <canvas id="canvas" width="300" height="220" style="display:none;"></canvas>
+                <div class="camera-wrap">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="overlay"></canvas>
+                </div>
+                <canvas id="capture-canvas" width="300" height="220" style="display:none;"></canvas>
             </div>
 
-            <form id="capture-form" method="POST" action="/capture/save">
-                <input type="hidden" name="image_data" id="image-data">
-                <div class="actions">
-                    <button type="button" id="capture-btn">Capture Image</button>
-                    <span class="status">Camera must be enabled to capture.</span>
-                </div>
-            </form>
-
-            {% if emotion %}
-            <div class="result">
-                Detected emotion: <b>{{ emotion }}</b> ({{ score }})
-                {% if emotion_probs %}
-                <div class="prob-list" aria-label="Emotion probabilities">
-                    {% for row in emotion_probs %}
-                    <div class="prob-item">
-                        <span>{{ row.label }}</span>
-                        <div class="prob-bar">
-                            <div class="prob-fill" data-width="{{ (row.prob * 100) | round(1) }}%"></div>
+                    <form id="capture-form" method="POST" action="/capture/save">
+                        <input type="hidden" name="image_data" id="image-data">
+                        <div class="actions">
+                            <button type="button" id="toggle-detect" class="paused">Start Detection</button>
+                            <button type="button" id="toggle-camera">Start Camera</button>
+                            <button type="button" id="capture-btn">Capture Image</button>
+                            <span class="status">Camera must be enabled to capture.</span>
                         </div>
-                        <span>{{ (row.prob * 100) | round(1) }}%</span>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-            {% elif emotion_msg %}
-            <div class="result">
-                {{ emotion_msg }}
-            </div>
-            {% endif %}
+                    </form>
+
         </div>
 
-        <div class="card sidebar">
+                <div class="card help-panel">
             <h3>How it works</h3>
             <ol class="steps">
                 <li>Allow camera access in your browser.</li>
@@ -302,33 +328,174 @@
                     Neutral face improves accuracy
                 </div>
             </div>
-            <a class="logout" href="/logout">Logout</a>
         </div>
     </div>
+</main>
+</div>
 </div>
 
 <script>
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+        });
+    }
     const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
+    const captureCanvas = document.getElementById("capture-canvas");
+    const overlay = document.getElementById("overlay");
     const captureBtn = document.getElementById("capture-btn");
+    const toggleDetectBtn = document.getElementById("toggle-detect");
+    const toggleCameraBtn = document.getElementById("toggle-camera");
     const imageData = document.getElementById("image-data");
     const form = document.getElementById("capture-form");
+    const statusText = document.querySelector(".status");
+    const frameCount = document.getElementById("frame-count");
+    const faceCount = document.getElementById("face-count");
 
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => {
+    let isReady = false;
+    let pollTimer = null;
+    let framesSent = 0;
+    let detectionPaused = true;
+    let stream = null;
+
+    async function startCamera() {
+        if (stream) return;
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
             video.srcObject = stream;
-        })
-        .catch(() => {
+            toggleCameraBtn.textContent = "Stop Camera";
+            statusText.textContent = detectionPaused
+                ? "Camera ready. Click Start Detection."
+                : "Detecting...";
+        } catch (err) {
             captureBtn.disabled = true;
             captureBtn.textContent = "Camera blocked";
-        });
+            statusText.textContent = "Camera blocked. Enable access to start detection.";
+        }
+    }
+
+    function stopCamera() {
+        if (!stream) return;
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+        video.srcObject = null;
+        isReady = false;
+        toggleCameraBtn.textContent = "Start Camera";
+        statusText.textContent = "Camera stopped.";
+    }
 
     captureBtn.addEventListener("click", () => {
-        const context = canvas.getContext("2d");
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        imageData.value = canvas.toDataURL("image/jpeg");
+        const context = captureCanvas.getContext("2d");
+        context.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
+        imageData.value = captureCanvas.toDataURL("image/jpeg");
         form.submit();
     });
+
+    function syncCanvasSize() {
+        if (!video.videoWidth || !video.videoHeight) return;
+        captureCanvas.width = video.videoWidth;
+        captureCanvas.height = video.videoHeight;
+        overlay.width = video.clientWidth;
+        overlay.height = video.clientHeight;
+        isReady = true;
+    }
+
+    function drawDetections(result) {
+        const ctx = overlay.getContext("2d");
+        ctx.clearRect(0, 0, overlay.width, overlay.height);
+        if (!result || !result.detections || !result.detections.length) return;
+
+        const scaleX = overlay.width / result.width;
+        const scaleY = overlay.height / result.height;
+        ctx.lineWidth = 2;
+        ctx.font = "14px 'Space Grotesk', sans-serif";
+        ctx.textBaseline = "top";
+
+        result.detections.forEach(det => {
+            const x = det.x * scaleX;
+            const y = det.y * scaleY;
+            const w = det.w * scaleX;
+            const h = det.h * scaleY;
+            ctx.strokeStyle = "#2e6f6b";
+            ctx.fillStyle = "rgba(46, 111, 107, 0.2)";
+            ctx.strokeRect(x, y, w, h);
+            ctx.fillRect(x, y, w, h);
+            const label = `${det.emotion} (${det.score})`;
+            ctx.fillStyle = "#1f1d1a";
+            ctx.fillRect(x, Math.max(0, y - 18), ctx.measureText(label).width + 8, 18);
+            ctx.fillStyle = "#fff";
+            ctx.fillText(label, x + 4, Math.max(0, y - 16));
+        });
+    }
+
+    toggleDetectBtn.addEventListener("click", () => {
+        detectionPaused = !detectionPaused;
+        if (detectionPaused) {
+            toggleDetectBtn.textContent = "Start Detection";
+            toggleDetectBtn.classList.add("paused");
+            statusText.textContent = "Detection paused.";
+        } else {
+            toggleDetectBtn.textContent = "Pause Detection";
+            toggleDetectBtn.classList.remove("paused");
+            if (!stream) {
+                startCamera();
+            } else {
+                statusText.textContent = "Detecting...";
+            }
+        }
+    });
+
+    toggleCameraBtn.addEventListener("click", () => {
+        if (stream) {
+            stopCamera();
+            detectionPaused = true;
+            toggleDetectBtn.textContent = "Start Detection";
+            toggleDetectBtn.classList.add("paused");
+        } else {
+            startCamera();
+        }
+    });
+
+    async function pollDetection() {
+        if (detectionPaused) return;
+        if (!isReady || video.paused || video.ended) return;
+        const context = captureCanvas.getContext("2d");
+        context.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
+        const frame = captureCanvas.toDataURL("image/jpeg", 0.7);
+
+        try {
+            const response = await fetch("/capture/detect", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image_data: frame })
+            });
+            const result = await response.json();
+            if (result.error) {
+                statusText.textContent = result.error;
+                return;
+            }
+            framesSent += 1;
+            if (frameCount) frameCount.textContent = String(framesSent);
+            if (faceCount) faceCount.textContent = String(result.detections.length || 0);
+            statusText.textContent = result.detections.length
+                ? `Detected ${result.detections.length} face(s)`
+                : "No face detected";
+            drawDetections(result);
+        } catch (err) {
+            statusText.textContent = "Detection error. Check server logs.";
+        }
+    }
+
+    video.addEventListener("loadedmetadata", () => {
+        syncCanvasSize();
+        if (!pollTimer) {
+            pollTimer = setInterval(pollDetection, 500);
+        }
+    });
+
+    window.addEventListener("resize", syncCanvasSize);
 
     const bars = document.querySelectorAll(".prob-fill");
     if (bars.length) {

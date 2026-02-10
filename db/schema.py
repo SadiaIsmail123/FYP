@@ -40,6 +40,29 @@ def ensure_users_table():
     conn.close()
 
 
+def ensure_emotion_events_table():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS emotion_events (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            session_id VARCHAR(64) NOT NULL,
+            emotion VARCHAR(50) NOT NULL,
+            score FLOAT NOT NULL,
+            captured_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_emotion_user_session (user_id, session_id),
+            INDEX idx_emotion_captured_at (captured_at)
+        )
+        """
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
 def ensure_tables():
     ensure_persons_table()
     ensure_users_table()
+    ensure_emotion_events_table()

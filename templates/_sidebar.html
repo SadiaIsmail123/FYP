@@ -1,0 +1,24 @@
+<button class="sidebar-toggle" id="sidebarToggle" type="button">Menu</button>
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <div class="logo-mark" aria-hidden="true"></div>
+            <div>
+                <div class="logo-text">Emotion</div>
+                <span class="logo-sub">System</span>
+            </div>
+        </div>
+    </div>
+    <div class="side-divider"></div>
+    <div class="side-links">
+        <a href="/dashboard" class="{% if active_page == 'dashboard' %}active{% endif %}">Dashboard</a>
+        <a href="/" class="{% if active_page == 'live' %}active{% endif %}">Live Detection</a>
+        <a href="/coming-soon?page=Model%20Info" class="{% if active_page == 'model' %}active{% endif %}">Model Info</a>
+        <a href="/coming-soon?page=Profile" class="{% if active_page == 'profile' %}active{% endif %}">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+    <div class="user-card">
+        <strong>{{ display_name or "User" }}</strong>
+        <span>{{ email or "Signed in" }}</span>
+    </div>
+</aside>

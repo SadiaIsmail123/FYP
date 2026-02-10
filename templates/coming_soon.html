@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} - Coming Soon</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <style>
+        :root {
+            --bg: #f2f2f2;
+            --ink: #1f1d1a;
+            --muted: #7a7a7a;
+            --card: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.10);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Space Grotesk", system-ui, sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+        }
+        .page {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 16px 60px 300px;
+        }
+        .panel {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 12px 30px var(--shadow);
+            border: 1px solid rgba(26, 36, 43, 0.12);
+        }
+        .panel h1 {
+            margin: 0 0 10px;
+            font-size: 28px;
+        }
+        .panel p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        @media (max-width: 900px) {
+            .page {
+                padding: 32px 16px 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page with-sidebar">
+    <div class="shell">
+        {% include "_sidebar.html" %}
+        <main>
+            <div class="panel">
+                <h1>{{ page_title }}</h1>
+                <p>Coming soon.</p>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+        });
+    }
+</script>
+</body>
+</html>
